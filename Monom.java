@@ -143,6 +143,19 @@ public class Monom implements function{
 		}
 	}
 
+	
+	public function initFromString(String s) {	
+		function m = new Monom(s);
+		return m;
+	}
+	
+	public function  copy() {
+		Monom m = new Monom(this.get_coefficient(),this.get_power());
+		return m;
+	}
+	
+
+
 	//****** Private Methods and Data *******
 
 

@@ -99,6 +99,7 @@ public class Polynom implements Polynom_able{
 		if(cnt==pol.size()) {pol.add(m1);}
 	}
 	
+
 	public static void main(String[] args)
 	{
 		Polynom p1 = new Polynom("3+3x+x^2");
@@ -107,6 +108,7 @@ public class Polynom implements Polynom_able{
 		System.out.println(p1);
 		
 	}
+
 
 	@Override
 	public void substract(Polynom_able p1){
@@ -170,6 +172,12 @@ public class Polynom implements Polynom_able{
 		boolean ans=true;
 		Iterator<Monom> pol1 = pol.iterator();
 		Iterator<Monom> pol2 = p1.iteretor();
+
+	public boolean equals(Object p1){
+		boolean ans=true;
+		Iterator<Monom> pol1 = pol.iterator();
+		Iterator<Monom> pol2 = ((Polynom) p1).iteretor();
+
 		Monom m1=pol1.next();
 		Monom m2=pol2.next();
 		while(ans && pol1.hasNext())
@@ -250,16 +258,20 @@ public class Polynom implements Polynom_able{
 	@Override
 	public void multiply(Monom m1){
 		Monom m = new Monom("0");
-
 		for(int i=0;i<pol.size();i++)
 		{
 			m=pol.get(i);
 			m.multipy(m1);	
 			pol.set(i, m);	
 		}
-
-
 	}
+
+	@Override
+	public function initFromString(String s) {	
+		function pol = new Polynom(s);
+		return pol;
+  }
+	
 	public String toString() {
 		if(pol.size() == 0 )  return "Polynomial not initialized";
 
