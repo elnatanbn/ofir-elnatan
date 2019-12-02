@@ -29,36 +29,34 @@ public class Polynom implements Polynom_able{
 	public Polynom (String s){
 		pol=new ArrayList<Monom>();
 		String temp = "";
-		int cnt=0;
+		int ind=0;
 		for(int i=0;i<s.length();i++)
 		{
-			if(s.charAt(0)=='+' || s.charAt(0)=='-' )
-			{	
-				if(s.charAt(0)=='-')
-				{
-					temp= "-";
-				}
+			if(s.charAt(0)=='-')
+			{
+				temp= "-";
 				s=s.substring(i+1);
-
 			}
+			
 			if(s.charAt(i) == '+' || s.charAt(i) == '-')
 			{
-				temp = temp+s.substring(cnt,i);
+				temp = temp+s.substring(ind,i);
 				Monom m =new Monom(temp);
 				pol.add(m);	
 				temp="";
-				cnt=i;
+				ind=i;
 			}
 		}
-		if(cnt<s.length())
+
+		if(ind<s.length())
 		{
-			temp = s.substring(cnt);
+			temp = s.substring(ind);
 			Monom m = new Monom(temp);
 			pol.add(m);	
 		}
 	}
 
-		
+
 
 	@Override
 	public double f(double x){
@@ -98,7 +96,7 @@ public class Polynom implements Polynom_able{
 		}
 		if(cnt==pol.size()) {pol.add(m1);}
 	}
-	
+
 
 	@Override
 	public void substract(Polynom_able p1){
@@ -118,12 +116,12 @@ public class Polynom implements Polynom_able{
 					double a=mu.get_coefficient();
 					double b=md.get_coefficient();
 					Monom cul = new Monom(a-b,md.get_power());
-					
+
 					if(cul.get_coefficient() != 0) 	{sub.add(cul);}
 					else {poldown.remove();}
 				}
 			}
-			
+
 			if(!power_match)
 			{
 				Monom neg = new Monom("-1");
@@ -139,6 +137,17 @@ public class Polynom implements Polynom_able{
 			}
 		}
 		this.pol=sub.pol;
+	}
+
+	@Override
+	public void multiply(Monom m1){
+		Monom m = new Monom("0");
+		for(int i=0;i<pol.size();i++)
+		{
+			m=pol.get(i);
+			m.multipy(m1);	
+			pol.set(i, m);	
+		}
 	}
 
 	@Override
@@ -181,22 +190,6 @@ public class Polynom implements Polynom_able{
 	}
 
 	@Override
-	public double root(double x0, double x1, double eps){
-		double l = x0;
-		double r = x1;
-
-		if (l >r || this.f(l)*this.f(r)>0) {
-			throw new RuntimeException("parameters problem");
-		}
-		while(r-l > eps) {
-			double mid=(r+l)/2;
-			if(this.f(l)*this.f(mid) <= 0) r=mid;
-			else l=mid;
-		}
-		return (l+r)/2;
-	}
-
-	@Override
 	public Polynom_able copy(){	
 		int cnt=0;
 		Iterator<Monom> polcopy = pol.iterator();
@@ -207,7 +200,6 @@ public class Polynom implements Polynom_able{
 			cnt++;
 			m=polcopy.next();
 		}
-
 		return this;
 	}
 
@@ -240,31 +232,22 @@ public class Polynom implements Polynom_able{
 	}
 
 	@Override
-	public void multiply(Monom m1){
-		Monom m = new Monom("0");
+	public double root(double x0, double x1, double eps){
+		double l = x0;
+		double r = x1;
 
-		for(int i=0;i<pol.size();i++)
-		{
-			m=pol.get(i);
-			m.multipy(m1);	
-			pol.set(i, m);	
+		if (l >r || this.f(l)*this.f(r)>0){
+			throw new RuntimeException("parameters problem");
 		}
+		while(r-l > eps) {
+			double mid=(r+l)/2;
+			if(this.f(l)*this.f(mid) <= 0) r=mid;
+			else l=mid;
+		}
+		return (l+r)/2;
+	}
 
-
-	}
-	
-	@Override
-	public function initFromString(String s) {	
-		function pol = new Polynom(s);
-		return pol;
-	}
-	
-	public static void main(String[] args)
-	{
-		
-	}
-	
-	public String toString() {
+	public String toString(){
 		if(pol.size() == 0 )  return "Polynomial not initialized";
 
 		Iterator<Monom> i = pol.iterator();
@@ -280,9 +263,15 @@ public class Polynom implements Polynom_able{
 	}
 
 	@Override
-	public Iterator<Monom> iteretor() {
-		return pol.iterator();
+	public function initFromString(String s){	
+		Polynom p1 = new Polynom(s);
+		this.pol=p1.pol;
+		return p1;
 	}
 
 
+	@Override
+	public Iterator<Monom> iteretor() {
+		return pol.iterator();
+	}
 }

@@ -21,14 +21,15 @@ public class Monom implements function{
 		this.set_coefficient(a);
 		this.set_power(b);
 	}
-	public Monom(Monom m) 
-	{
+	
+	public Monom(Monom m){
 		this(m.get_coefficient(), m.get_power());
 	}
 
 	public double get_coefficient(){
 		return this._coefficient;
 	}
+	
 	public int get_power(){
 		return this._power;
 	}
@@ -46,7 +47,11 @@ public class Monom implements function{
 		ans = this.get_coefficient()*Math.pow(x, p);
 		return ans;
 	} 
-	public boolean isZero() {return this.get_coefficient() == 0;}
+	public boolean isZero() {
+		if(get_coefficient() == 0) return true;	
+		else return false;
+	}
+	
 	// ****** add your code below *********
 
 	public Monom(String s) {	
@@ -66,17 +71,16 @@ public class Monom implements function{
 		if(s.contains("x") && !s.contains("^")) //// for constant*x
 		{
 			if(s.charAt(s.length()-1)!='x'){throw new RuntimeException("no power, x isn't last");}
-			
-				try {
-					String p = s.substring(0 , s.indexOf('x'));
-					double r=Double.parseDouble(p);
-					this.set_coefficient(r);
-					this.set_power(1);
-				}
-				catch (Exception e) {throw new RuntimeException("coefficient isn't number");}
-			
+			try {
+				String p = s.substring(0 , s.indexOf('x'));
+				double r=Double.parseDouble(p);
+				this.set_coefficient(r);
+				this.set_power(1);
+			}
+			catch (Exception e) {throw new RuntimeException("coefficient isn't number");}
+
 		}
-		
+
 		if(s.contains("x^") && s.lastIndexOf(s)!='^') //constant*x^integer
 		{
 			try {
@@ -98,7 +102,7 @@ public class Monom implements function{
 	}
 
 	public void add(Monom m){
-		
+
 		if(this.get_power()==m.get_power())
 		{
 			if((this._coefficient+m._coefficient)==0)
@@ -108,7 +112,7 @@ public class Monom implements function{
 			}
 			else{this.set_coefficient(this._coefficient+m._coefficient);}
 		}
-		
+
 	}
 
 	public void multipy(Monom d){
@@ -122,7 +126,7 @@ public class Monom implements function{
 			this.set_coefficient((this.get_coefficient()*d.get_coefficient()));
 			this.set_power(this.get_power()+d.get_power());
 		}
-		
+
 	}
 
 	public String toString(){
@@ -142,18 +146,24 @@ public class Monom implements function{
 				return false;
 		}
 	}
-	
+
 	public function initFromString(String s) {	
 		function m = new Monom(s);
 		return m;
 	}
 	
+	public static void main(String[] args) {
+		Monom m=new Monom("0");
+		m.initFromString("x^2");
+		m.f(5);
+		System.out.println(m);
+	}
+
 	public function  copy() {
-		Monom m = new Monom(this.get_coefficient(),this.get_power());
+		function  m = new Monom(this.get_coefficient(),this.get_power());
 		return m;
 	}
-	
-	
+
 
 	//****** Private Methods and Data *******
 
