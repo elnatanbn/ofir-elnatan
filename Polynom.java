@@ -12,11 +12,12 @@ import myMath.Monom;
  *
  */
 public class Polynom implements Polynom_able{
-
+	
+	
+	
 	private ArrayList<Monom> pol;
 	/**
 	 * Zero (empty polynom)
-
 	 */
 	public Polynom(){
 		pol=new ArrayList<Monom>();
@@ -29,34 +30,41 @@ public class Polynom implements Polynom_able{
 	public Polynom (String s){
 		pol=new ArrayList<Monom>();
 		String temp = "";
-		int ind=0;
+		int cnt=0;
 		for(int i=0;i<s.length();i++)
 		{
-			if(s.charAt(0)=='-')
-			{
-				temp= "-";
+			if(s.charAt(0)== '+' || s.charAt(0)== '-' )
+			{	
+				if(s.charAt(0)=='-')
+				{
+					temp= "-";
+				}
 				s=s.substring(i+1);
 			}
-			
+
 			if(s.charAt(i) == '+' || s.charAt(i) == '-')
 			{
-				temp = temp+s.substring(ind,i);
-				Monom m =new Monom(temp);
+				Monom m = new Monom();
+				temp = temp+s.substring(cnt,i);
+				if(temp.equals("x") || temp.equals("+x") || temp.equals("-x")) {m = new Monom("x");}
+				else if(temp.equals("-x") ) {m = new Monom("-x");}
+				else  m = new Monom(temp);
 				pol.add(m);	
 				temp="";
-				ind=i;
+				cnt=i;
 			}
 		}
 
-		if(ind<s.length())
-		{
-			temp = s.substring(ind);
-			Monom m = new Monom(temp);
-			pol.add(m);	
+		if(cnt<s.length())
+		{	
+			Monom m = new Monom();
+			temp = s.substring(cnt);
+			if(temp.equals("x") || temp.equals("+x")) {m = new Monom("x");}
+			else if(temp.equals("-x") ) {m = new Monom("-x");}
+			else  m = new Monom(temp);
+			pol.add(m);		
 		}
 	}
-
-
 
 	@Override
 	public double f(double x){
@@ -65,7 +73,7 @@ public class Polynom implements Polynom_able{
 		while(fun.hasNext())
 		{
 			Monom m= fun.next();
-			f+=m.f(x);
+			f= f+m.f(x);
 		}
 		return f;
 	}
@@ -115,7 +123,7 @@ public class Polynom implements Polynom_able{
 					power_match = true;
 					double a=mu.get_coefficient();
 					double b=md.get_coefficient();
-					Monom cul = new Monom(a-b,md.get_power());
+					Monom cul = new Monom(a-b,mu.get_power());
 
 					if(cul.get_coefficient() != 0) 	{sub.add(cul);}
 					else {poldown.remove();}
@@ -135,7 +143,9 @@ public class Polynom implements Polynom_able{
 				sub.add(zero);
 				this.pol=sub.pol;
 			}
+			if(sub.isZero() == true) {sub.add(Monom.ZERO);}
 		}
+
 		this.pol=sub.pol;
 	}
 
@@ -190,21 +200,14 @@ public class Polynom implements Polynom_able{
 	}
 
 	@Override
-	public Polynom_able copy(){	
-		int cnt=0;
-		Iterator<Monom> polcopy = pol.iterator();
-		Monom m= polcopy.next();
-		while(polcopy.hasNext())
-		{
-			pol.set(cnt,m);
-			cnt++;
-			m=polcopy.next();
-		}
-		return this;
+	public function copy(){	
+		Polynom p = new Polynom(this.toString());
+		function f = p;
+		return f;
 	}
 
 	@Override
-	public Polynom_able derivative() {
+	public Polynom derivative() {
 		Polynom poldev = new Polynom();
 		Iterator<Monom> dev = this.iteretor();
 		while(dev.hasNext()) {
@@ -213,24 +216,33 @@ public class Polynom implements Polynom_able{
 		}
 		return poldev;
 	}
+    
 
-	@Override
-	public double area(double x0, double x1, double eps) {
-		double sum=0;
-		double f=0;
-		while(f<=sum)
-		{
-			Iterator<Monom> area = this.iteretor();
-			while(area.hasNext())
-			{
-				Monom m=area.next();
-				sum=sum+m.f(f);
-			}
-
-		}
-		return sum;
+    public double area(double x0, double x1, double eps) {		
+    	
+    	double sum=0;
+    	double p=x0;
+    	while(p<x1)
+    	{
+    		Iterator<Monom> area = pol.iterator();
+    		while(area.hasNext())
+    		{
+    			Monom m=area.next();
+    			sum=sum+m.f(p)*eps;
+    			
+    		}
+    		p=p+eps;
+    	}
+    	return sum;
+    }
+	
+	public static void main(String[] args) {
+		Polynom p1=new Polynom("3x+1");
+		
+		System.out.println(p1.area(0,3, 0.01));
+		
 	}
-
+	
 	@Override
 	public double root(double x0, double x1, double eps){
 		double l = x0;
@@ -247,6 +259,7 @@ public class Polynom implements Polynom_able{
 		return (l+r)/2;
 	}
 
+	@Override
 	public String toString(){
 		if(pol.size() == 0 )  return "Polynomial not initialized";
 
@@ -256,19 +269,17 @@ public class Polynom implements Polynom_able{
 		while(i.hasNext()) {
 
 			f = i.next();
-			if(f.get_coefficient()>0)polString =polString + "+"  + f.toString();
-			else if(f.get_coefficient()<0)polString =polString  + f.toString();
+			if(f.get_coefficient()>0)polString=polString + "+" + f.toString();
+			else if(f.get_coefficient()<0)polString=polString + f.toString();
 		}
 		return polString ;
 	}
 
 	@Override
-	public function initFromString(String s){	
-		Polynom p1 = new Polynom(s);
-		this.pol=p1.pol;
-		return p1;
+	public function initFromString(String s){
+		function f = new Polynom(s);
+		return f;
 	}
-
 
 	@Override
 	public Iterator<Monom> iteretor() {
