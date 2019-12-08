@@ -16,7 +16,7 @@ public interface complex_function extends function{
 	public void mul(function f1);
 	/** Divides this complex_function with the f1 complex_function
 	 * 
-	 * @param f1 the complex_function which will be divid this complex_function.
+	 * @param f1 the complex_function which will be divide this complex_function.
 	 */
 	public void div(function f1);
 	/** Computes the maximum over this complex_function and the f1 complex_function
