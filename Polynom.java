@@ -1,6 +1,5 @@
 package myMath;
 import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import myMath.Monom;
@@ -14,6 +13,7 @@ import myMath.Monom;
  *
  */
 public class Polynom implements Polynom_able{
+
 	ArrayList<Monom> pol = new ArrayList<Monom>();
 	/**
 	 * Zero (empty polynom)
@@ -35,7 +35,6 @@ public class Polynom implements Polynom_able{
 				if(s.charAt(0)=='-'){temp= "-";}
 				s=s.substring(i+1);
 			}
-
 			if(s.charAt(i) == '+' || s.charAt(i) == '-'){
 				Monom m = new Monom();
 				temp = temp+s.substring(cnt,i);
@@ -47,7 +46,6 @@ public class Polynom implements Polynom_able{
 				cnt=i;
 			}
 		}
-
 		if(cnt<s.length()){	
 			Monom m = new Monom();
 			temp = s.substring(cnt);
@@ -101,19 +99,11 @@ public class Polynom implements Polynom_able{
 		this.pol.sort(sort1);
 	}
 
-	public static void main(String[] args) {
-		Polynom p1 = new Polynom("2x^3+2x^3+2x+1");
-		Polynom p2 = new Polynom("2x^3-1");
-		//Polynom p3 = new Polynom("2x^3");
-		p2.substract(p1);
-		System.out.println(p2);
-	}
-
-	public void sub(Monom m1) {
+	public void sub(Monom m1){
 		this.sortpol();
 		boolean found_power = false;
 		Iterator<Monom> iter = this.iteretor();
-		while(iter.hasNext()) {
+		while(iter.hasNext()){
 			Monom m = iter.next();
 			if(m.get_power()==m1.get_power()) { // same power
 				m.sub(m1);
@@ -124,20 +114,18 @@ public class Polynom implements Polynom_able{
 			}
 		}
 		if(!found_power){
-		this.pol.add(m1);
+			this.pol.add(m1);
 		}
 	}
-
 	/**
 	 *  This method subtract Polynom p1 from this Polynom. 
 	 *  @param p1 type Polynom_able.
 	 *  */
 	public void substract(Polynom_able p1) {
-	this.sortpol();
-	((Polynom) p1).sortpol();
+		this.sortpol();
+		((Polynom) p1).sortpol();
 		Iterator<Monom> It=p1.iteretor();
-		while(It.hasNext())
-		{
+		while(It.hasNext()){
 			this.sub(It.next());
 		}
 	}
@@ -179,13 +167,15 @@ public class Polynom implements Polynom_able{
 
 	@Override
 	public boolean equals(Object p1){
+		function p = new Polynom(p1.toString());
+		Polynom p2 = new Polynom(p.toString());
+		p2.sortpol();
 		this.sortpol();
-		((Polynom) p1).sortpol();
 		boolean ans=true;
-		if(this.pol.size() != ((Polynom) p1).pol.size()) {return false;}
+		if(this.pol.size() != p2.pol.size()) {return false;}
 		else {
 			Iterator<Monom> pol1 = pol.iterator();
-			Iterator<Monom> pol2 = ((Polynom) p1).iteretor();
+			Iterator<Monom> pol2 = p2.iteretor();
 			while(ans && pol1.hasNext()){
 				Monom m1 = pol1.next();
 				Monom m2 = pol2.next();
@@ -196,7 +186,7 @@ public class Polynom implements Polynom_able{
 	}
 
 	@Override
-	public boolean isZero() {
+	public boolean isZero(){
 		if(pol.isEmpty() || pol.get(0) == Monom.ZERO) {return true;}
 		else return false;
 	}
@@ -209,7 +199,7 @@ public class Polynom implements Polynom_able{
 	}
 
 	@Override
-	public Polynom derivative() {
+	public Polynom derivative(){
 		Polynom poldev = new Polynom();
 		Iterator<Monom> dev = this.iteretor();
 		while(dev.hasNext()) {
@@ -222,7 +212,7 @@ public class Polynom implements Polynom_able{
 	@Override
 	public double area(double x0, double x1, double eps){		
 		double sum=0,i=x0;
-		while(i<x1) {
+		while(i<x1){
 			if(0<=f(i)){
 				sum=sum+f(i)*eps;
 			}
@@ -235,9 +225,7 @@ public class Polynom implements Polynom_able{
 	public double root(double x0, double x1, double eps){
 		double l = x0;
 		double r = x1;
-		if (l >r || this.f(l)*this.f(r)>0){
-			throw new RuntimeException("parameters problem");
-		}
+		if (l >r || this.f(l)*this.f(r)>0){throw new RuntimeException("parameters problem");}
 		while(r-l > eps){
 			double mid=(r+l)/2;
 			if(this.f(l)*this.f(mid) <= 0) r=mid;
@@ -271,7 +259,13 @@ public class Polynom implements Polynom_able{
 		return pol.iterator();
 	}
 
-	//** Private Methods and Data ***
+	public static void main(String[] args) {
+		Polynom p = new Polynom("1+2x^2+3x^4+5x^3+1+6+5+3");
+		Polynom p1 = new Polynom("1+2x^2+3x^4+5x^3+1+6+5+4");
+		System.out.println(p.equals(p1));
+	}
+	//* Private Methods and Data **
+
 	private void sortpol(){
 		Polynom p = new Polynom(this.toString());
 		Polynom ptot = new Polynom();
@@ -283,4 +277,17 @@ public class Polynom implements Polynom_able{
 		Monom_Comperator sort = new Monom_Comperator();
 		this.pol.sort(sort);
 	}
+	public int sizepol() {
+		Monom m = new Monom();
+		Iterator<Monom> pol = this.iteretor();
+		int cnt=0;
+		while(pol.hasNext()){
+			cnt++;
+			m=pol.next();
+		}
+		if(m.equals(Monom.ZERO))cnt=0;
+		this.sizepol = cnt;
+		return this.sizepol;
+	}
+	public int sizepol;
 }

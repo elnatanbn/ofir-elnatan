@@ -70,10 +70,9 @@ public interface Polynom_able extends cont_function{
 	 * @return
 	 */
 	public boolean isZero();
-	
 	/**
-	 * Compute a new Polynom which is the derivative of this Polynom
-	 * @return
+	 * create a deep copy of this Polynom
+	 * @return 
 	 */
 	public Polynom_able derivative();
 	/**

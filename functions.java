@@ -11,8 +11,9 @@ public interface functions extends Collection<function>{
 	 * Init a new collection of functions from a file
 	 * @param file - the file name
 	 * @throws IOException if the file does not exists of unreadable (wrong format)
+	 * @throws  
 	 */
-	public void initFromFile(String file) throws IOException;
+	public void initFromFile(String file) throws IOException ;
 /**
  * 
  * @param file - the file name
@@ -21,7 +22,7 @@ public interface functions extends Collection<function>{
 	public void saveToFile(String file) throws IOException;
 /**
  * Draws all the functions in the collection in a GUI window using the
- * given parameters for the GUI window and the range & resolution
+ * given parameters for the GUI windo and the range & resolution
  * @param width - the width of the window - in pixels
  * @param height - the height of the window - in pixels
  * @param rx - the range of the horizontal axis

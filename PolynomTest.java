@@ -57,10 +57,10 @@ public class PolynomTest {
 	@Test
 	public void testSubstract() {
 		Polynom p1 = new Polynom("2x^3+4x");
-		Polynom p2 = new Polynom("4x+2x");
-		Polynom p3 = new Polynom("2x^3-2x");
+		Polynom p2 = new Polynom("2x^3");
+		Polynom p3 = new Polynom("4x");
 		p1.substract(p2);
-		assertEquals(p1 , p3);
+		assertEquals(p3 , p1);
 	}
 
 	@Test
