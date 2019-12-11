@@ -27,6 +27,7 @@ public class Polynom implements Polynom_able{
 	 * @param s: is a string represents a Polynom
 	 */
 	public Polynom (String s){
+		s=s.replaceAll(" ", "");
 		pol=new ArrayList<Monom>();
 		String temp = "";
 		int cnt=0;
@@ -167,22 +168,27 @@ public class Polynom implements Polynom_able{
 
 	@Override
 	public boolean equals(Object p1){
-		function p = new Polynom(p1.toString());
-		Polynom p2 = new Polynom(p.toString());
-		p2.sortpol();
-		this.sortpol();
 		boolean ans=true;
-		if(this.pol.size() != p2.pol.size()) {return false;}
+		if(this.isZero() || p1 == null) ans = false;
 		else {
-			Iterator<Monom> pol1 = pol.iterator();
-			Iterator<Monom> pol2 = p2.iteretor();
-			while(ans && pol1.hasNext()){
-				Monom m1 = pol1.next();
-				Monom m2 = pol2.next();
-				if(m1.equals(m2)) {ans=true;}
-				else {return false;}
+			Polynom p = new Polynom(p1.toString());
+			Polynom p2 = new Polynom(p.toString());
+			p2.sortpol();
+			this.sortpol();
+			if(this.pol.size() != p2.pol.size()) {return false;}
+			else {
+				Iterator<Monom> pol1 = pol.iterator();
+				Iterator<Monom> pol2 = p2.iteretor();
+				while(ans && pol1.hasNext()){
+					Monom m1 = pol1.next();
+					Monom m2 = pol2.next();
+					if(m1.equals(m2)) {ans=true;}
+					else {return false;}
+				}
 			}
-			return ans;}
+		}
+		return ans;
+
 	}
 
 	@Override
@@ -260,9 +266,9 @@ public class Polynom implements Polynom_able{
 	}
 
 	public static void main(String[] args) {
-		Polynom p = new Polynom("1+2x^2+3x^4+5x^3+1+6+5+3");
+		Polynom p = new Polynom("1+x");
 		Polynom p1 = new Polynom("1+2x^2+3x^4+5x^3+1+6+5+4");
-		System.out.println(p.equals(p1));
+		System.out.println(p);
 	}
 	//* Private Methods and Data **
 

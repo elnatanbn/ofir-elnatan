@@ -64,7 +64,7 @@ public class Monom implements function{
 	// ****** add your code below *********
 
 	public Monom(String s) {	
-
+		s=s.replaceAll(" ", "");
 		if(s==null || s == "" )throw new RuntimeException( "null/empty"); //The number is invalid
 		else if(s=="0"){new Monom(ZERO);}  // number is 0
 		else if(s=="-x") {this.set_coefficient(-1);this.set_power(1);} //negative -x
@@ -85,7 +85,6 @@ public class Monom implements function{
 			int cnt=0;
 			for(int i=0;i<s.length();i++){if(s.charAt(i) == 'x') cnt++;} //check for only one x
 			if(s.charAt(s.length()-1)!='x' || cnt > 1){throw new RuntimeException("not monom");}
-			if(s.charAt(s.length()-1)!='x'){throw new RuntimeException("no power, x isn't last");}
 			try {
 				if(s.charAt(0) == '+' || s.charAt(0) == '-'){
 					String p = s.substring(1 , s.indexOf('x'));

@@ -1,264 +1,174 @@
 package myMath;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-//import jdk.nashorn.internal.parser.JSONParser;
-
-
-
-public class Functions_GUI implements functions {
+public class Functions_GUI extends ArrayList<function> implements functions {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<function> collection = new ArrayList<function>();
-	private function funvalue;
-	public String type="";
-
-	
 	public Functions_GUI() {
-		this.collection.removeAll(this.collection);
-		this.type="null";
-		this.funvalue=null;
+		this.removeAll(this.collection);
 	}
 
 	public Functions_GUI(function f1){
-		this.collection.add(f1);
-		this.type=f1.toString();
-		this.funvalue = f1;	
+		this.add(f1);
 	}
 
 	public Functions_GUI(String s){
 		function f1 = new Polynom(s);
 		this.collection.add(f1);
-		this.type=f1.toString();
-		this.funvalue = f1;	
-	}
-
-	@Override
-	public int size() {
-		return this.collection.size();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return this.collection.isEmpty();
-	}
-
-	@Override
-	public boolean contains(Object o) {
-		return this.collection.contains(o);
-	}
-
-	@Override
-	public Iterator<function> iterator() {	
-		return  collection.iterator();
-	}
-
-	@Override
-	public Object[] toArray(){
-		return collection.toArray();
-	}
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return (collection.toArray(a));
-	}
-
-	@Override
-	public boolean add(function e) {
-		if(!this.contains(e)) {
-			this.collection.add(e);
-			return true;
-		}
-		else return false;
-	}
-
-	@Override
-	public boolean remove(Object o) {
-		if(	collection.contains(o)) return false;
-		return true;
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return this.collection.containsAll(c);
-	}
-
-	public static void main(String[] a) {
-
-		function f1 = new Polynom("3-x^3+x^2");
-		function f3 = new Polynom("x^2-x^3");
-		function m = new Monom("2x^2");
-		function m1 = new Monom("3x^2");
-		Functions_GUI one = new Functions_GUI(f1);
-		Functions_GUI one1 = new Functions_GUI(f1);
-		one1.add(m);
-		one1.add(m1);
-		one.add(m1);
-		System.out.println(one);
-		System.out.println(one1);
-		System.out.println(one1.removeAll(one));
-		System.out.println(one);
-		System.out.println(one1);
-	}
-	
-	@Override
-	public boolean addAll(Collection<? extends function> c) {
-		if(this.collection.containsAll(c)) return false;
-		else{
-			for (function x: c) {
-			this.collection.add(x);
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		if(!this.collection.containsAll(c)) return false;
-		else{
-			this.collection.removeAll(c);
-			
-		}
-		return true;
-
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		this.collection.removeAll(this.collection);
-		//		this.collection=c.addAll(c);	
-
-		return true;
-	}
-
-	@Override
-	public void clear() {
-		this.removeAll(this.collection);
 	}
 
 	@Override
 	public void initFromFile(String file){
-		function p =new Polynom();
-		try {
-			FileInputStream fileIn = new FileInputStream("C:\\Users\\Obador\\eclipse-workspace\\ofir.txt");
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			p =  (function) in.readObject();
-			in.close();
-			fileIn.close();	
-			System.out.println(p.toString());
-		}
-		catch(Throwable e){
-			System.out.println(p.toString());
+		for (int i = 0; i < this.size(); i++) {
+			function f = this.get(i);
+			try {
+				FileInputStream fileIn = new FileInputStream("C:\\Users\\Obador\\eclipse-workspace\\ofir.txt");
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				f =  (function) in.readObject();
+				in.close();
+				fileIn.close();		
+			}
+			catch(Throwable e){
+				System.out.println("problem with file");
+			}
 		}
 	}
 
 	@Override
 	public void saveToFile(String file)  {
-		function p = this.funvalue;
-		try {
-			FileOutputStream fileIn = new FileOutputStream("C:\\Users\\Obador\\eclipse-workspace\\ofir.txt");
-			ObjectOutputStream in = new ObjectOutputStream(fileIn);
-			in.writeObject(p); 
-			System.out.println(p.toString());
-			in.close();
-			fileIn.close();	
-		}
-		catch(IOException e) {
-			e.printStackTrace();
+		for (int i = 0; i < this.size(); i++) {
+			function f = this.get(i);
+			try {
+				FileOutputStream fileIn = new FileOutputStream("C:\\Users\\Obador\\eclipse-workspace\\ofir.txt");
+				ObjectOutputStream in = new ObjectOutputStream(fileIn);
+				in.writeObject(f); 
+				in.close();
+				fileIn.close();	
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Override
 	public void drawFunctions(int width, int height, Range rx, Range ry, int resolution) {
+		StdDraw.setCanvasSize(width,height);
 		StdDraw.setXscale(rx.get_min(),rx.get_max());
 		StdDraw.setYscale(ry.get_min(),ry.get_max());
-		double l=0;
-
-		while(l<15) {
-			StdDraw.setPenColor(StdDraw.GRAY);
-			StdDraw.line(l,-15,l,15);	//+y grid	
-			StdDraw.line(-l,-15,-l,15);	//-y grid
-			StdDraw.line(-15,l,15,l);  //+x grid
-			StdDraw.line(-15,-l,15,-l);	//-x grid
-			l++;
-		}
-		for(int i=-15;i<16;i++){
-			int y =1;
-			StdDraw.text(-y, i, ""+i);	
-			StdDraw.text(i, 0, ""+i);
-		}
-		StdDraw.setPenColor(StdDraw.BLACK);
-		StdDraw.line(0,-15,0,15);
-		StdDraw.line(-15,0,15,0);
-		double i = 0;
-		while(i < resolution) {
-			StdDraw.filledCircle(i, this.funvalue.f(i), 0.1);
-			StdDraw.filledCircle(-i,this.funvalue.f(-i), 0.1);
-			i=i+0.008;
-		}
-	}
-	public void drawFunctions() {
-
-		StdDraw.setXscale(-15,15);
-		StdDraw.setYscale(-15,15);
-		double l=0;
-		while(l<15) {
-			StdDraw.setPenColor(StdDraw.GRAY);
-			double b =l*1.5;
-			StdDraw.line(b,-15,b,15);	//+y grid	
-			StdDraw.line(-b,-15,-b,15);	//-y grid
-			StdDraw.line(-15,l,15,l);  //+x grid
-			StdDraw.line(-15,-l,15,-l);	//-x grid
-			l++;
-		}
-		for(int i=-15;i<16;i++){
-			int y =1;
-			StdDraw.text(-y, i, ""+i);	
-			StdDraw.text(i, 0, ""+i);
-		}
-		StdDraw.setPenColor(StdDraw.BLACK);
-		StdDraw.line(0,-15,0,15);
-		StdDraw.line(-15,0,15,0);
-		double i = 0;
-		while(i<15) {
-			StdDraw.filledCircle(i, this.funvalue.f(i), 0.1);
-			StdDraw.filledCircle(-i,this.funvalue.f(-i), 0.1);
-			i=i+0.008;
-		}
-		System.out.println("finish");
 		StdDraw.setPenColor(StdDraw.GRAY);
-		StdDraw.filledRectangle(-15, -10, 30, 5);
-		StdDraw.setPenColor(StdDraw.BLUE);
-		StdDraw.text(-12, -6, ""+this.type);
-
+		for(double i=rx.get_min();i<rx.get_max();i++){
+			StdDraw.line(i,ry.get_min(),i,ry.get_max());
+		}
+		for(double i=ry.get_min();i<ry.get_max();i++){
+			StdDraw.line(rx.get_min(),i,rx.get_max(),i);
+		}
+		StdDraw.setPenColor(StdDraw.BLACK);
+		StdDraw.line(rx.get_min(),0,rx.get_max(),0);  
+		StdDraw.line(0,ry.get_min(),0,ry.get_max());
+		StdDraw.setPenColor(StdDraw.BLACK);
+		StdDraw.setFont(new Font("ariel",Font.PLAIN, 15));
+		for (double i = rx.get_min(); i <= rx.get_max(); i++) {
+			int d =(int) i;
+			StdDraw.text(i ,-0.5, Integer.toString(d));
+		}
+		for (double i = ry.get_min(); i <= ry.get_max(); i++) {
+			int d =(int) i;
+			StdDraw.text(-0.3 ,i, Integer.toString(d));
+		}
+		for(int j=0;j<this.size();j++) {
+			function p = this.get(j);
+			Color c = Colors[j];
+			StdDraw.setPenColor(c);
+			for(int i=0;i<1000;i++){
+				double b= (double) i ;
+				StdDraw.filledCircle(b/resolution*2, p.f(b/resolution*2), 0.07);
+				StdDraw.filledCircle(-b/resolution*2,p.f(-b/resolution*2), 0.07);
+			}
+			System.out.println("finish");
+		}
+		StdDraw.setPenColor(StdDraw.GRAY);
+		StdDraw.filledRectangle(0, ry.get_min(),rx.get_max(),this.size()/1.5);
+		StdDraw.setPenColor(StdDraw.BLACK);
+		double l=ry.get_min()+0.3;
+		for (int i = 0; i < this.size(); i++) {
+			function p = this.get(i);	
+			StdDraw.textLeft(rx.get_min(), l, "f(x)="+p.toString());	
+			l=l+0.5;
+		}	
 	}
+
+	public void drawFunctions() {
+		this.drawFunctions(_W, _H, _RX, _RY, RES);
+	}
+
 	@Override
 	public void drawFunctions(String json_file) {
-//		// parsing file "fileName.json" 
-//				Object obj = null;
-//				try {
-//					JSONParser jp = new JSONParser();
-//					FileReader fr = new FileReader(fileName);
-//					obj = jp.parse(fr);
-//					//obj = new JSONParser().parse(new FileReader(fileName));
-//				} catch (IOException | ParseException e) {
-//					e.printStackTrace();
-//				} 
-//
-//				// type casting obj to JSONObject 
-//				JSONObject jo = (JSONObject) obj; 
-//
-//				// getting firstName and lastName 
-//				String firstName = (String) jo.get("firstName"); 
-//				String lastName = (String) jo.get("lastName"); 
-//
-//				System.out.println(firstName); 
-//				System.out.println(lastName); 
+		try {
+			readJsonFile(json_file);
+			drawFunctions(_W, _H, _RX, _RY, RES);
+		} catch (Exception e) {
+			this.drawFunctions();
+		}
+	}
+	
+	public void readJsonFile(String json_file) throws IOException, ParseException {
+		try {
+			Reader Read = new FileReader(json_file);
+			JSONParser sr = new JSONParser();
+			JSONObject Jf = (JSONObject) sr.parse(Read);
+
+			int w = ((Long) Jf.get("Width")).intValue();
+			int h = ((Long) Jf.get("Height")).intValue();
+			int res = ((Long) Jf.get("Resolution")).intValue();
+			JSONArray X = (JSONArray) Jf.get("Range_X");
+			JSONArray Y = (JSONArray) Jf.get("Range_Y");
+
+			Iterator<Long> y = Y.iterator();
+			Range RY = new Range(y.next(), y.next());
+			
+			Iterator<Long> x = X.iterator();
+			Range RX = new Range(x.next(), x.next());
+
+			this.RES=res;
+			this._RY=RY;
+			this._W=w;
+			this._H=h;
+			this._RX=RX;
+		}
+		catch (Exception e) {System.out.println("problem with json_file");}
+	}
+	public String toString(){
+		String ans="";
+		for(int i=0;i<this.size();i++) {
+			ans = ans+","+this.get(i).toString();
+		}
+		return ans;
 	}
 
-	public String toString(){	
-		return this.collection.toString();
-	}
-
+	public static Color[] Colors = { Color.blue, Color.cyan, Color.MAGENTA, Color.ORANGE, Color.red, Color.GREEN,
+			Color.PINK };
+	
+	private int _W = 1000;
+	private int _H = 600;
+	private Range _RX = new Range(-10, 10);
+	private Range _RY = new Range(-5, 15);
+	private int RES = 200;
 }
